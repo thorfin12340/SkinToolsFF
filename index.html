@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Exposé : L'Argent ou la Santé ?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px 15px;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #f6d365 0%, #fda085 50%, #43e97b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1rem;
+            color: #cbd5e1;
+            margin-top: 5px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        .cards-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .cards-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .card:active {
+            transform: scale(0.96);
+        }
+
+        .card.money:hover, .card.money.active {
+            border-color: #f6d365;
+            box-shadow: 0 0 30px rgba(246, 211, 101, 0.3);
+            background: rgba(246, 211, 101, 0.12);
+        }
+
+        .card.health:hover, .card.health.active {
+            border-color: #43e97b;
+            box-shadow: 0 0 30px rgba(67, 233, 123, 0.3);
+            background: rgba(67, 233, 123, 0.12);
+        }
+
+        .icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .card.active .icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .card.money h2 { color: #f6d365; }
+        .card.health h2 { color: #43e97b; }
+
+        .card-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .card.active .card-details {
+            max-height: 350px;
+            opacity: 1;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .card-details ul {
+            list-style: none;
+        }
+
+        .card-details li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .card-details li::before {
+            content: "✦";
+            position: absolute;
+            left: 0;
+            color: inherit;
+        }
+
+        .verdict-section {
+            margin-top: 15px;
+            background: linear-gradient(135deg, rgba(67, 233, 123, 0.15), rgba(56, 249, 215, 0.15));
+            border: 1px solid rgba(67, 233, 123, 0.4);
+            border-radius: 24px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .verdict-section:active {
+            transform: scale(0.98);
+        }
+
+        .verdict-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #38f9d7;
+            letter-spacing: 0.5px;
+        }
+
+        .verdict-content {
+            display: none;
+            margin-top: 15px;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .verdict-section.revealed .verdict-content {
+            display: block;
+        }
+
+        .verdict-content h3 {
+            font-size: 1.6rem;
+            color: #43e97b;
+            margin-bottom: 10px;
+        }
+
+        .verdict-content p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #f8fafc;
+        }
+
+        .personal-choice {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.25);
+            border-left: 4px solid #43e97b;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 0.98rem;
+            color: #e2e8f0;
+        }
+
+        .personal-choice strong {
+            color: #43e97b;
+        }
+
+        footer {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>L'Argent ou la Santé ?</h1>
+        <p>Réflexion sur la véritable richesse de l'être humain</p>
+    </header>
+
+    <div class="container">
+        <div class="cards-wrapper">
+            <div class="card money" onclick="toggleCard(this)">
+                <span class="icon">💰</span>
+                <h2>L'Argent</h2>
+                <p>Un outil puissant qui façonne notre quotidien et notre confort.</p>
+                <div class="card-details">
+                    <ul>
+                        <li>Offre la sécurité matérielle et l'accès à l'éducation.</li>
+                        <li>Permet de réaliser des projets et d'aider ses proches.</li>
+                        <li>Reste un moyen d'échange fragile face aux crises ou aux imprévus.</li>
+                        <li>Ne peut jamais remplacer le temps ni réparer l'irréparable.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card health" onclick="toggleCard(this)">
+                <span class="icon">❤️‍🔥</span>
+                <h2>La Santé</h2>
+                <p>Le moteur silencieux qui rend chaque instant de la vie possible.</p>
+                <div class="card-details">
+                    <ul>
+                        <li>Est le terrain de jeu indispensable sans lequel rien n'existe.</li>
+                        <li>Donne l'énergie physique et mentale pour reconstruire même en partant de zéro.</li>
+                        <li>Permet de savourer chaque réussite et chaque moment de bonheur.</li>
+                        <li>Accompagne l'être humain comme son bien le plus précieux.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="verdict-section" onclick="revealVerdict(this)">
+            <div class="verdict-title">⚖️ Le Verdict Final : Laquelle est la plus fidèle ?</div>
+            <div class="verdict-content">
+                <h3>🏆 La Santé est sans aucun doute la plus fidèle</h3>
+                <p>
+                    L'argent va et vient au gré de la chance, de l'économie ou des choix de vie, et il peut disparaître du jour au lendemain. 
+                    <strong>La santé</strong>, elle, est notre alliée la plus loyale : tant que nous prenons soin d'elle, elle nous soutient dans chaque épreuve et donne de la valeur à tout le reste.
+                </p>
+                <div class="personal-choice">
+                    <strong>💡 Mon choix tranché :</strong> L'argent n'est qu'un outil de passage, mais la santé est le terrain de jeu. Sans elle, tout l'argent du monde ne sert à rien ; avec elle, même les poches vides, tout reste possible et constructible.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Présentation scolaire interactive
+    </footer>
+
+    <script>
+        function toggleCard(element) {
+            element.classList.toggle('active');
+        }
+
+        function revealVerdict(element) {
+            element.classList.add('revealed');
+        }
+    </script>
+</body>
+</html>
